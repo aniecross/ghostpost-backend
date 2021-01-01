@@ -5,6 +5,7 @@ from rest_framework import viewsets
 from rest_framework.response import Response
 from rest_framework.decorators import action
 from rest_framework.parsers import JSONParser
+from django.db.models import F
 
 # Create your views here.
 class PostViewsets(viewsets.ModelViewSet):
@@ -56,9 +57,11 @@ class PostViewsets(viewsets.ModelViewSet):
         return Response({'status': 'like removed'})   
 
     def create(self, request):
+        print(request)
         post_data = JSONParser().parse(request)
         post_serializer = PostSerializer(data=post_data['data'])
+        print(post_serializer) 
         if post_serializer.is_valid():
             post_serializer.save()
             return Response({'status': 'success'})
-        return Response({'status': 'failed'})      
+        return Response({'status': post_serializer.errors})      
